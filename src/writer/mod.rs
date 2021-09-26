@@ -1,7 +1,7 @@
 use crate::generator::Generate;
-use std::io::{BufWriter, Write};
-use std::fs::{File, OpenOptions};
 use std::error::Error;
+use std::fs::{File, OpenOptions};
+use std::io::{BufWriter, Write};
 use std::path::Path;
 
 pub struct Writer {
@@ -10,12 +10,15 @@ pub struct Writer {
 
 impl Writer {
     pub fn new(generator: Box<dyn Generate>) -> Writer {
-        Writer {
-            generator,
-        }
+        Writer { generator }
     }
 
-    pub fn write_matrix(&mut self, filename: &str, row_count: u128, col_count: u128) -> Result<(), Box<dyn Error>> {
+    pub fn write_matrix(
+        &mut self,
+        filename: &str,
+        row_count: u128,
+        col_count: u128,
+    ) -> Result<(), Box<dyn Error>> {
         let mut writer = Writer::create_file_writer(filename)?;
 
         for _row in 0..row_count {

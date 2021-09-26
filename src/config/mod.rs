@@ -41,7 +41,10 @@ impl Config {
     pub fn parse_mandatory(args: &[String]) -> Result<Config, Box<dyn Error>> {
         if args.len() < 2 {
             // at least 2 args are required: row_count, col_count
-            return Err(Box::from(ConfigError::NotEnoughMandatoryArguments(2, args.len())))
+            return Err(Box::from(ConfigError::NotEnoughMandatoryArguments(
+                2,
+                args.len(),
+            )));
         }
 
         let row_count = args[0].parse()?;
@@ -71,10 +74,12 @@ impl Config {
         }
 
         if self.range_to < self.range_from {
-            return Err(Box::from(ConfigError::InvalidRangeError(self.range_from, self.range_to)));
+            return Err(Box::from(ConfigError::InvalidRangeError(
+                self.range_from,
+                self.range_to,
+            )));
         }
 
         Ok(())
     }
-
 }

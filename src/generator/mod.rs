@@ -24,40 +24,37 @@ pub struct Generator {
 
 impl Generator {
     pub fn from_config(config: Config) -> Box<Self> {
-        Box::new(
-            Generator {
-                rng: rand::thread_rng(),
-                line_start_supplier: Generator::create_line_start_supplier(&config),
-                line_end_supplier: Generator::create_line_end_supplier(&config),
-                element_supplier: Generator::create_element_supplier(&config),
-                col_delimiter_supplier: Generator::create_delimiter_supplier(&config),
-                config,
-            }
-        )
+        Box::new(Generator {
+            rng: rand::thread_rng(),
+            line_start_supplier: Generator::create_line_start_supplier(&config),
+            line_end_supplier: Generator::create_line_end_supplier(&config),
+            element_supplier: Generator::create_element_supplier(&config),
+            col_delimiter_supplier: Generator::create_delimiter_supplier(&config),
+            config,
+        })
     }
 
     fn create_line_start_supplier(_config: &Config) -> fn(&Config) -> String {
-        |_config: &Config| {EMPTY_STRING.to_string()}
+        |_config: &Config| EMPTY_STRING.to_string()
     }
 
     fn create_line_end_supplier(_config: &Config) -> fn(&Config) -> String {
-        |_config: &Config| {NEW_LINE.to_string()}
+        |_config: &Config| NEW_LINE.to_string()
     }
 
     fn create_element_supplier(config: &Config) -> fn(&Config, &mut ThreadRng) -> String {
         if config.custom_range {
             return |config: &Config, rng: &mut ThreadRng| {
-                rng.gen_range(config.range_from..config.range_to).to_string()
+                rng.gen_range(config.range_from..config.range_to)
+                    .to_string()
             };
         }
 
-        |_config: &Config, rng: &mut ThreadRng| {
-            rng.gen::<i128>().to_string()
-        }
+        |_config: &Config, rng: &mut ThreadRng| rng.gen::<i128>().to_string()
     }
 
     fn create_delimiter_supplier(_config: &Config) -> fn(&Config) -> String {
-        |config: &Config| {String::from(&config.col_delimiter)}
+        |config: &Config| String::from(&config.col_delimiter)
     }
 }
 

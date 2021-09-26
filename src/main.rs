@@ -1,8 +1,8 @@
 use std::{env, process};
 
 use config::Config;
-use writer::Writer;
 use generator::Generator;
+use writer::Writer;
 
 mod config;
 mod generator;
@@ -22,7 +22,9 @@ fn main() {
     let generator = Generator::from_config(config.clone());
     let mut writer = Writer::new(generator);
 
-    if let Err(why) = writer.write_matrix(&config.output_filename, config.row_count, config.col_count) {
+    if let Err(why) =
+        writer.write_matrix(&config.output_filename, config.row_count, config.col_count)
+    {
         println!("Failed to generate and write matrix: {}", why);
         process::exit(1);
     }
