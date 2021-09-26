@@ -1,59 +1,29 @@
 use std::{env, process};
-use std::error::Error;
-use std::fs::OpenOptions;
-use std::io::{BufWriter, Write};
-use std::path::Path;
-
-use rand::Rng;
 
 use config::Config;
+use writer::Writer;
+use generator::Generator;
 
 mod config;
+mod generator;
+mod writer;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    let config = match Config::parse_config(env::args().collect()) {
+fn main() {
+    let args: Vec<String> = env::args().collect();
+    let config = match Config::from_args(&args) {
         Ok(config) => config,
         Err(why) => {
             println!("Failed to parse command line arguments: {}", why);
             process::exit(1);
         }
     };
-    println!("{:?}", config);
+    // println!("{:?}", config);
 
-    let path = Path::new(&config.output_filename);
-    let file = OpenOptions::new()
-        .create(true)
-        .write(true)
-        .truncate(true)
-        .open(path);
+    let generator = Generator::from_config(config.clone());
+    let mut writer = Writer::new(generator);
 
-    let file = match file {
-        Ok(file) => file,
-        Err(why) => {
-            println!("Failed to open output file: {}", why);
-            process::exit(1);
-        }
-    };
-    let mut writer = BufWriter::new(file);
-    let mut rng = rand::thread_rng();
-
-    for _row in 0..config.row_count {
-        for _col in 0..config.col_count {
-            if config.custom_range {
-                write!(writer, "{}", rng.gen_range(config.range_from..config.range_to))?;
-            } else {
-                write!(writer, "{}", rng.gen::<i64>())?;
-            }
-
-            if config.spaces {
-                write!(writer, " ")?;
-            }
-        }
-
-        write!(writer, "\n")?;
+    if let Err(why) = writer.write_matrix(&config.output_filename, config.row_count, config.col_count) {
+        println!("Failed to generate and write matrix: {}", why);
+        process::exit(1);
     }
-
-    writer.flush()?;
-
-    Ok(())
 }
