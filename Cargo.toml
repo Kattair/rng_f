@@ -1,10 +1,12 @@
 [package]
 name = "rng_f"
-version = "0.2.0"
+description = "Simple program to generate a matrix and write it into a file"
+version = "0.2.1"
 authors = ["Kattair <martin.kustra@tutanota.com>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 rand = "0.8.3"
+clap = "3.0.0-beta.5"
