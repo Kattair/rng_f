@@ -1,16 +1,24 @@
 use rand::rngs::ThreadRng;
 use rand::Rng;
 
-use crate::generator::Generate;
 use crate::Config;
-
-use super::NumberGenerator;
+use super::Generator;
 
 static EMPTY_STRING: &str = "";
 static NEW_LINE: &str = "\n";
 
+pub struct NumberGenerator {
+    pub config: Config,
+    pub rng: ThreadRng,
+
+    pub line_start_supplier: fn(&Config) -> String,
+    pub line_end_supplier: fn(&Config) -> String,
+    pub element_supplier: fn(&Config, &mut ThreadRng) -> String,
+    pub col_delimiter_supplier: fn(&Config) -> String,
+}
+
 impl NumberGenerator {
-    pub fn from_config(config: &Config) -> Box<dyn Generate> {
+    pub fn from_config(config: &Config) -> Box<dyn Generator> {
         Box::new(NumberGenerator {
             rng: rand::thread_rng(),
             line_start_supplier: NumberGenerator::create_line_start_supplier(&config),
@@ -43,5 +51,23 @@ impl NumberGenerator {
 
     fn create_delimiter_supplier(_config: &Config) -> fn(&Config) -> String {
         |config: &Config| String::from(&config.delimiter)
+    }
+}
+
+impl Generator for NumberGenerator {
+    fn supply_line_start(&self) -> String {
+        (self.line_start_supplier)(&self.config)
+    }
+
+    fn supply_line_end(&self) -> String {
+        (self.line_end_supplier)(&self.config)
+    }
+
+    fn supply_element(&mut self) -> String {
+        (self.element_supplier)(&self.config, &mut self.rng)
+    }
+
+    fn supply_col_delimiter(&self) -> String {
+        (self.col_delimiter_supplier)(&self.config)
     }
 }

@@ -1,12 +1,12 @@
 use std::process;
 
-use config::Config;
-use generator::NumberGenerator;
-use writer::Writer;
-
 mod config;
 mod generator;
 mod writer;
+
+use config::Config;
+use generator::NumberGenerator;
+use writer::Writer;
 
 fn main() {
     let config = match Config::new() {
