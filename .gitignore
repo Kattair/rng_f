@@ -12,3 +12,6 @@ Cargo.lock
 # Idea files
 /.idea
 /*.iml
+
+# VSCode
+/.vscode
