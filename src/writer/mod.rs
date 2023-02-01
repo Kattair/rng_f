@@ -5,49 +5,39 @@ use std::path::Path;
 
 use crate::generator::Generator;
 
-pub struct Writer {
-    pub generator: Box<dyn Generator>,
-}
+pub fn write_matrix(
+    generator: &mut Box<dyn Generator>,
+    filename: &str,
+    row_count: u128,
+    col_count: u128,
+) -> Result<(), Box<dyn Error>> {
+    let mut writer = create_file_writer(filename)?;
 
-impl Writer {
-    pub fn new(generator: Box<dyn Generator>) -> Writer {
-        Writer { generator }
-    }
+    for _row in 0..row_count {
+        write!(writer, "{}", generator.supply_line_start())?;
 
-    pub fn write_matrix(
-        &mut self,
-        filename: &str,
-        row_count: u128,
-        col_count: u128,
-    ) -> Result<(), Box<dyn Error>> {
-        let mut writer = Writer::create_file_writer(filename)?;
-
-        for _row in 0..row_count {
-            write!(writer, "{}", self.generator.supply_line_start())?;
-
-            for _col in 0..(col_count - 1) {
-                write!(writer, "{}", self.generator.supply_element())?;
-                write!(writer, "{}", self.generator.supply_col_delimiter())?;
-            }
-
-            // write the last column separately to write line_end instead of column_delimiter
-            write!(writer, "{}", self.generator.supply_element())?;
-            write!(writer, "{}", self.generator.supply_line_end())?;
+        for _col in 0..(col_count - 1) {
+            write!(writer, "{}", generator.supply_element())?;
+            write!(writer, "{}", generator.supply_col_delimiter())?;
         }
 
-        writer.flush()?;
-
-        Ok(())
+        // write the last column separately to write line_end instead of column_delimiter
+        write!(writer, "{}", generator.supply_element())?;
+        write!(writer, "{}", generator.supply_line_end())?;
     }
 
-    fn create_file_writer(filename: &str) -> Result<BufWriter<File>, Box<dyn Error>> {
-        let path = Path::new(filename);
-        let file = OpenOptions::new()
-            .create(true)
-            .write(true)
-            .truncate(true)
-            .open(path)?;
+    writer.flush()?;
 
-        Ok(BufWriter::new(file))
-    }
+    Ok(())
+}
+
+fn create_file_writer(filename: &str) -> Result<BufWriter<File>, Box<dyn Error>> {
+    let path = Path::new(filename);
+    let file = OpenOptions::new()
+        .create(true)
+        .write(true)
+        .truncate(true)
+        .open(path)?;
+
+    Ok(BufWriter::new(file))
 }
