@@ -12,3 +12,4 @@ edition = "2021"
 [dependencies]
 rand = "0.8.5"
 clap = { version = "4.1.4", features = ["derive"] }
+thiserror = "1.0.38"

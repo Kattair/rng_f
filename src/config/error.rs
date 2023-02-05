@@ -1,26 +1,12 @@
-use core::fmt;
-use std::error::Error;
-use std::fmt::Formatter;
+use thiserror::Error;
 
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub enum ConfigError {
+    #[error("Not enough arguments to create range. Argument count: {0}")]
     NotEnoughArgumentsToCreateRangeError(usize),
-    InvalidRangeError(i128, i128),
-}
-
-impl Error for ConfigError {}
-
-impl fmt::Display for ConfigError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), fmt::Error> {
-        match self {
-            ConfigError::NotEnoughArgumentsToCreateRangeError(argument_count) => {
-                write!(f, "Not enough argument to create range. Argument count: {}", argument_count)?
-            }
-            ConfigError::InvalidRangeError(from, to) => {
-                write!(f, "Invalid range: {} < {}", to, from)?
-            }
-        };
-
-        Ok(())
-    }
+    #[error("Invalid range: {to:?} < {from:?}")]
+    InvalidRangeError {
+        from: i128,
+        to: i128
+    },
 }

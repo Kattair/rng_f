@@ -64,7 +64,7 @@ impl Config {
             let to = range[1];
 
             if from > to {
-                return Err(ConfigError::InvalidRangeError(from, to));
+                return Err(ConfigError::InvalidRangeError { from, to });
             }
         }
 
