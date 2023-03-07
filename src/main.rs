@@ -1,28 +1,18 @@
-use std::process;
-
-mod config;
-mod generator;
-mod writer;
-
-use config::Config;
-use generator::NumberGenerator;
+use rng_f::{config::Config, generator::NumberGenerator, writer};
 
 fn main() {
-    let config = match Config::new() {
-        Ok(config) => config,
-        Err(why) => {
-            eprintln!("Failed to parse command line arguments: {}", why);
-            process::exit(1);
-        }
+    let config = Config::new().expect("Failed to parse command line arguments");
+    let range = match config.range {
+        Some(range) => range[0]..range[1],
+        None => i128::MIN..i128::MAX,
     };
-    // println!("{:#?}", new_config);
+    let mut generator = NumberGenerator::new(range, &config.delimiter);
 
-    let mut generator = NumberGenerator::from_config(&config);
-
-    if let Err(why) =
-        writer::write_matrix(&mut generator, &config.output_filename, config.row_count, config.col_count)
-    {
-        eprintln!("Failed to generate and write matrix: {}", why);
-        process::exit(1);
-    }
+    writer::write_matrix(
+        &mut generator,
+        &config.output_filename,
+        config.row_count,
+        config.col_count,
+    )
+    .expect("Failed to generate and write matrix");
 }

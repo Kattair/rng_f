@@ -1,5 +1,4 @@
 use clap::Parser;
-use std::error::Error;
 
 mod error;
 use error::ConfigError;
@@ -13,14 +12,12 @@ pub struct Config {
     pub col_count: u128,
 
     /// Define a string to be used as the delimiter between columns
-    #[arg(short,
-        long,
-        default_value = " ",
-        display_order = 1)]
+    #[arg(short, long, default_value = " ", display_order = 1)]
     pub delimiter: String,
 
     /// Specify output filename
-    #[arg(short,
+    #[arg(
+        short,
         long,
         value_name = "FILENAME",
         default_value = "output.txt",
@@ -38,7 +35,7 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new() -> Result<Config, Box<dyn Error>> {
+    pub fn new() -> Result<Config, ConfigError> {
         let config = Config::parse();
 
         config.validate()?;
@@ -46,7 +43,7 @@ impl Config {
         Ok(config)
     }
 
-    fn validate(&self) -> Result<(), Box<dyn Error>> {
+    fn validate(&self) -> Result<(), ConfigError> {
         // need to validate range
         self.validate_range()?;
 
