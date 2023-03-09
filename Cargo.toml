@@ -1,7 +1,7 @@
 [package]
 name = "rng_f"
 description = "Simple program to generate a matrix and write it into a file"
-version = "0.3.1"
+version = "0.4.0"
 repository = "https://github.com/Kattair/rng_f"
 license = "MIT"
 authors = ["Kattair <martin.kustra@tutanota.com>"]
@@ -17,6 +17,6 @@ path = "src/main.rs"
 name = "rng_f"
 
 [dependencies]
-rand = { version = "0.8.5", features = ["small_rng"]}
-clap = { version = "4.1.4", features = ["derive"] }
-thiserror = "1.0.38"
+rand = { version = "0.8", features = ["small_rng"]}
+clap = { version = "4", features = ["derive"] }
+thiserror = "1"
