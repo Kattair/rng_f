@@ -1,18 +1,17 @@
-use std::error::Error;
 use std::fs::{File, OpenOptions};
-use std::io::{BufWriter, Write};
+use std::io::{self, BufWriter, Write};
 use std::path::Path;
 
 use crate::generator::Generator;
 
 pub fn write_matrix(
-    generator: &mut Box<dyn Generator>,
+    generator: &mut impl Generator,
     filename: &str,
     row_count: u128,
     col_count: u128,
-) -> Result<(), Box<dyn Error>> {
+) -> Result<(), io::Error> {
     let mut writer = create_file_writer(filename)?;
-
+    
     for _row in 0..row_count {
         write!(writer, "{}", generator.supply_line_start())?;
 
@@ -31,7 +30,7 @@ pub fn write_matrix(
     Ok(())
 }
 
-fn create_file_writer(filename: &str) -> Result<BufWriter<File>, Box<dyn Error>> {
+fn create_file_writer(filename: &str) -> Result<BufWriter<File>, io::Error> {
     let path = Path::new(filename);
     let file = OpenOptions::new()
         .create(true)
