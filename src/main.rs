@@ -12,7 +12,7 @@ fn main() {
 
     println!("Starting generation");
     let start_time = Instant::now();
-    
+
     writer::write_matrix(
         &mut generator,
         &config.output_filename,
@@ -20,7 +20,7 @@ fn main() {
         config.col_count,
     )
     .expect("Failed to generate and write matrix");
-    
+
     println!(
         "Generation took {} ms to complete",
         start_time.elapsed().as_millis()

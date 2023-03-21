@@ -11,7 +11,7 @@ pub fn write_matrix(
     col_count: u128,
 ) -> Result<(), io::Error> {
     let mut writer = create_file_writer(filename)?;
-    
+
     for _row in 0..row_count {
         write!(writer, "{}", generator.supply_line_start())?;
 
