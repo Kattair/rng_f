@@ -13,7 +13,7 @@ fn main() {
     println!("Starting generation");
     let start_time = Instant::now();
 
-    writer::write_matrix(
+    writer::write_matrix_into_file(
         &mut generator,
         &config.output_filename,
         config.row_count,
