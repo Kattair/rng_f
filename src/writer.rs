@@ -25,8 +25,6 @@ pub fn write_matrix(
         write!(writer, "{}", generator.supply_line_end())?;
     }
 
-    writer.flush()?;
-
     Ok(())
 }
 
