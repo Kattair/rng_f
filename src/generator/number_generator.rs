@@ -10,7 +10,6 @@ use super::constants::{EMPTY_STRING, NEW_LINE};
 use super::Generator;
 
 pub struct NumberGenerator {
-    buffer: String,
     rng: SmallRng,
     uniform: Uniform<i128>,
     column_delimiter: String,
@@ -19,7 +18,6 @@ pub struct NumberGenerator {
 impl NumberGenerator {
     pub fn new(range: Range<i128>, column_delimiter: &str) -> Self {
         NumberGenerator {
-            buffer: String::new(),
             rng: rand::rngs::SmallRng::from_entropy(),
             column_delimiter: column_delimiter.to_owned(),
             uniform: Uniform::from(range),
@@ -27,7 +25,7 @@ impl NumberGenerator {
     }
 }
 
-impl Generator for NumberGenerator {
+impl Generator<i128> for NumberGenerator {
     fn supply_line_start(&self) -> &str {
         EMPTY_STRING
     }
@@ -36,11 +34,8 @@ impl Generator for NumberGenerator {
         NEW_LINE
     }
 
-    fn supply_element(&mut self) -> &str {
-        let element = self.uniform.sample(&mut self.rng);
-        self.buffer = element.to_string();
-
-        &self.buffer
+    fn supply_element(&mut self) -> i128 {
+        self.uniform.sample(&mut self.rng)
     }
 
     fn supply_col_delimiter(&self) -> &str {
