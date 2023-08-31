@@ -1,11 +1,12 @@
+use std::fmt::Display;
 use std::fs::OpenOptions;
 use std::io::{self, BufWriter, Write};
 use std::path::Path;
 
 use crate::generator::Generator;
 
-pub fn write_matrix_into_file(
-    generator: &mut impl Generator,
+pub fn write_matrix_into_file<T: Display>(
+    generator: &mut impl Generator<T>,
     filename: &str,
     row_count: u128,
     col_count: u128,
@@ -20,8 +21,8 @@ pub fn write_matrix_into_file(
     write_matrix(generator, &mut file, row_count, col_count)
 }
 
-pub fn write_matrix(
-    generator: &mut impl Generator,
+pub fn write_matrix<T: Display>(
+    generator: &mut impl Generator<T>,
     writable: &mut impl Write,
     row_count: u128,
     col_count: u128,
