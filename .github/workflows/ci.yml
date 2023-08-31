@@ -1,0 +1,11 @@
+name: CI workflow
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  CI:
+    uses: Kattair/ga-workflows/.github/workflows/rust-ci-workflow.yml@main
