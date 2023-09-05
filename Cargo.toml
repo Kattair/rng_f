@@ -17,6 +17,6 @@ path = "src/main.rs"
 name = "rng_f"
 
 [dependencies]
-rand = { version = "0.8", features = ["small_rng"]}
+rand = { version = "0.8", features = ["std_rng"]}
 clap = { version = "4", features = ["derive"] }
 thiserror = "1"

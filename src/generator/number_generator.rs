@@ -2,15 +2,13 @@ use std::i128;
 use std::ops::Range;
 
 use rand::distributions::Uniform;
-use rand::prelude::Distribution;
-use rand::rngs::SmallRng;
-use rand::SeedableRng;
+use rand::prelude::*;
 
 use super::constants::{EMPTY_STRING, NEW_LINE};
 use super::Generator;
 
 pub struct NumberGenerator {
-    rng: SmallRng,
+    rng: StdRng,
     uniform: Uniform<i128>,
     column_delimiter: String,
 }
@@ -18,7 +16,7 @@ pub struct NumberGenerator {
 impl NumberGenerator {
     pub fn new(range: Range<i128>, column_delimiter: &str) -> Self {
         NumberGenerator {
-            rng: rand::rngs::SmallRng::from_entropy(),
+            rng: StdRng::from_entropy(),
             column_delimiter: column_delimiter.to_owned(),
             uniform: Uniform::from(range),
         }
