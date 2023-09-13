@@ -31,7 +31,7 @@ pub struct Config {
         allow_hyphen_values = true,
         value_names = &["FROM", "TO"],
         display_order = 3)]
-    pub range: Option<Vec<i128>>,
+    pub range: Option<Vec<i64>>,
 }
 
 impl Config {

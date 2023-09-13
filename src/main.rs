@@ -6,7 +6,7 @@ fn main() {
     let config = Config::new().expect("Failed to parse command line arguments");
     let range = match config.range {
         Some(range) => range[0]..range[1],
-        None => i128::MIN..i128::MAX,
+        None => i64::MIN..i64::MAX,
     };
     let mut generator = NumberGenerator::new(range, &config.delimiter);
 

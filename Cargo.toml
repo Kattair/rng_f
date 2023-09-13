@@ -20,3 +20,4 @@ name = "rng_f"
 rand = { version = "0.8", features = ["std_rng"]}
 clap = { version = "4", features = ["derive"] }
 thiserror = "1"
+itoa = "1"
