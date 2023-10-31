@@ -18,6 +18,7 @@ name = "rng_f"
 
 [dependencies]
 rand = { version = "0.8", features = ["std_rng"]}
-clap = { version = "4", features = ["derive"] }
+clap = { version = "4", features = ["derive", "string"] }
 thiserror = "1"
 itoa = "1"
+colored = "2"

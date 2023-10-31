@@ -1,14 +1,12 @@
-use std::time::Instant;
+use std::{error::Error, process, time::Instant};
 
+use clap::Parser;
+use colored::*;
 use rng_f::{config::Config, generator::NumberGenerator, writer};
 
-fn main() {
-    let config = Config::new().expect("Failed to parse command line arguments");
-    let range = match config.range {
-        Some(range) => range[0]..range[1],
-        None => i64::MIN..i64::MAX,
-    };
-    let mut generator = NumberGenerator::new(range, &config.delimiter);
+fn try_main() -> Result<(), Box<dyn Error>> {
+    let config = Config::parse();
+    let mut generator = NumberGenerator::new(config.range(), &config.delimiter)?;
 
     println!("Starting generation");
     let start_time = Instant::now();
@@ -18,11 +16,17 @@ fn main() {
         &config.output_filename,
         config.row_count,
         config.col_count,
-    )
-    .expect("Failed to generate and write matrix");
+    )?;
 
-    println!(
-        "Generation took {} ms to complete",
-        start_time.elapsed().as_millis()
-    );
+    let elapsed_time = start_time.elapsed().as_millis();
+    println!("Generation took {} ms to complete", elapsed_time);
+
+    Ok(())
+}
+
+fn main() {
+    if let Err(why) = try_main() {
+        eprintln!("{} {}", "error:".bold().red(), why);
+        process::exit(1);
+    }
 }

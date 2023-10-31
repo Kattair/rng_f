@@ -1,10 +1,9 @@
+use std::ops::Range;
+
 use clap::Parser;
 
-mod error;
-use error::ConfigError;
-
 #[derive(Parser, Clone, Debug)]
-#[command(author, about, version)]
+#[command(about, version)]
 pub struct Config {
     /// Specify the number of rows
     pub row_count: u128,
@@ -25,46 +24,45 @@ pub struct Config {
     )]
     pub output_filename: String,
 
-    /// Specify bottom and top limit for number range. Creates interval <from, to)
-    #[arg(short,
+    /// Shorthand to specify bottom and top limit for number range - creates interval <from, to)
+    #[arg(
+        short,
         long,
+        num_args = 2,
         allow_hyphen_values = true,
         value_names = &["FROM", "TO"],
-        display_order = 3)]
+        display_order = 3,
+        conflicts_with_all = &["range_from", "range_to"])]
     pub range: Option<Vec<i64>>,
+
+    /// Specify bottom limit for number range (inclusive)
+    #[arg(
+        short = 'f',
+        long,
+        value_name = "FROM",
+        allow_hyphen_values = true,
+        default_value(i64::MIN.to_string()),
+        display_order = 4
+    )]
+    pub range_from: i64,
+
+    /// Specify upper limit for number range (non-inclusive)
+    #[arg(
+        short = 't',
+        long,
+        value_name = "TO",
+        allow_hyphen_values = true,
+        default_value = i64::MAX.to_string(),
+        display_order = 5
+    )]
+    pub range_to: i64,
 }
 
 impl Config {
-    pub fn new() -> Result<Config, ConfigError> {
-        let config = Config::parse();
-
-        config.validate()?;
-
-        Ok(config)
-    }
-
-    fn validate(&self) -> Result<(), ConfigError> {
-        // need to validate range
-        self.validate_range()?;
-
-        Ok(())
-    }
-
-    fn validate_range(&self) -> Result<(), ConfigError> {
-        if let Some(range) = &self.range {
-            let range_len = range.len();
-            if range_len < 2 {
-                return Err(ConfigError::NotEnoughArgumentsToCreateRangeError(range_len));
-            }
-
-            let from = range[0];
-            let to = range[1];
-
-            if from > to {
-                return Err(ConfigError::InvalidRangeError { from, to });
-            }
+    pub fn range(&self) -> Range<i64> {
+        match &self.range {
+            Some(range) => range[0]..range[1],
+            None => self.range_from..self.range_to,
         }
-
-        Ok(())
     }
 }

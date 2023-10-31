@@ -3,9 +3,16 @@ use std::ops::Range;
 
 use rand::distributions::Uniform;
 use rand::prelude::*;
+use thiserror::Error;
 
 use super::constants::{EMPTY_STRING, NEW_LINE};
 use super::Generator;
+
+#[derive(Debug, Error)]
+pub enum NumberGeneratorError {
+    #[error("the provided range <{0:?}) contains no elements")]
+    EmptyRangeError(Range<i64>),
+}
 
 pub struct NumberGenerator {
     rng: StdRng,
@@ -15,13 +22,17 @@ pub struct NumberGenerator {
 }
 
 impl NumberGenerator {
-    pub fn new(range: Range<i64>, column_delimiter: &str) -> Self {
-        NumberGenerator {
+    pub fn new(range: Range<i64>, delimiter: &str) -> Result<Self, NumberGeneratorError> {
+        if range.is_empty() {
+            return Err(NumberGeneratorError::EmptyRangeError(range));
+        }
+
+        Ok(NumberGenerator {
             rng: StdRng::from_entropy(),
-            column_delimiter: column_delimiter.to_owned(),
+            column_delimiter: delimiter.to_owned(),
             uniform: Uniform::from(range),
             buffer: itoa::Buffer::new(),
-        }
+        })
     }
 }
 
