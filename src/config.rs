@@ -91,5 +91,5 @@ impl NumberGeneratorArgs {
 pub struct AsciiGeneratorArgs {
     /// Specify list of ascii characters to use
     #[arg(short = 'l', long, default_value = "abcABC", display_order = 1)]
-    list: String,
+    pub list: String,
 }

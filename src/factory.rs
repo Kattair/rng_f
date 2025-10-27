@@ -1,10 +1,12 @@
-use crate::{Config, Generator, Generators, NumberGenerator};
+use crate::{AsciiGenerator, Config, Generator, Generators, NumberGenerator};
 
-pub fn generator_from_config(config: &Config) -> Result<impl Generator, anyhow::Error> {
-    match &config.generator {
-        Generators::Number(args) => {
-            NumberGenerator::new(args.range(), &config.common_args.delimiter)
-        }
-        _ => todo!(),
-    }
+pub fn generator_from_config(config: &Config) -> Result<Box<dyn Generator>, anyhow::Error> {
+    let delimiter = &config.common_args.delimiter;
+
+    let generator: Box<dyn Generator> = match &config.generator {
+        Generators::Number(args) => Box::new(NumberGenerator::new(args.range(), delimiter)?),
+        Generators::Ascii(args) => Box::new(AsciiGenerator::new(args.list.to_owned(), delimiter)?),
+    };
+
+    Ok(generator)
 }

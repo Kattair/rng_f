@@ -7,7 +7,7 @@ use anyhow::anyhow;
 use crate::generator::Generator;
 
 pub fn write_matrix_into_file(
-    generator: &mut impl Generator,
+    generator: &mut Box<dyn Generator>,
     filename: &str,
     row_count: u128,
     col_count: u128,
@@ -24,7 +24,7 @@ pub fn write_matrix_into_file(
 }
 
 pub fn write_matrix(
-    generator: &mut impl Generator,
+    generator: &mut Box<dyn Generator>,
     writable: &mut impl Write,
     row_count: u128,
     col_count: u128,
@@ -34,7 +34,7 @@ pub fn write_matrix(
 }
 
 fn do_write_matrix(
-    generator: &mut impl Generator,
+    generator: &mut Box<dyn Generator>,
     writable: &mut impl Write,
     row_count: u128,
     col_count: u128,
