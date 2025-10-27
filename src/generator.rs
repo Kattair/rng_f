@@ -1,6 +1,8 @@
+mod ascii_generator;
 mod constants;
 mod number_generator;
 
+pub use ascii_generator::AsciiGenerator;
 pub use number_generator::NumberGenerator;
 
 pub trait Generator {
