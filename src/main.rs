@@ -1,14 +1,14 @@
-use std::{error::Error, process, time::Instant};
+use std::{process, time::Instant};
 
 use clap::Parser;
 use colored::*;
-use rng_f::{config::Config, generator::NumberGenerator, writer};
+use rng_f::{Config, NumberGenerator, writer};
 
-fn try_main() -> Result<(), Box<dyn Error>> {
+fn try_main() -> Result<(), anyhow::Error> {
     let config = Config::parse();
     let mut generator = NumberGenerator::new(config.range(), &config.delimiter)?;
 
-    println!("Starting generation");
+    println!("Starting to generate");
     let start_time = Instant::now();
 
     writer::write_matrix_into_file(
