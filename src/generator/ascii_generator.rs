@@ -25,9 +25,9 @@ impl AsciiGenerator {
             column_delimiter: delimiter.to_owned(),
             uniform: Uniform::try_from(0..chars.len() as u8)?,
             chars: chars
-                .split("")
-                .map(String::from_str)
-                .map(Result::unwrap)
+                .chars()
+                .filter(|c| !c.is_whitespace())
+                .map(String::from)
                 .collect(),
         })
     }
