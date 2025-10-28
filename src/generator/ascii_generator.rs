@@ -1,5 +1,3 @@
-use std::str::FromStr;
-
 use rand::{
     SeedableRng,
     distr::{Distribution, Uniform},
