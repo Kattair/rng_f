@@ -1,7 +1,7 @@
 use rand::{
     SeedableRng,
     distr::{Distribution, Uniform},
-    rngs::StdRng,
+    rngs::{StdRng, SysRng},
 };
 
 use crate::{
@@ -19,7 +19,7 @@ pub struct AsciiGenerator {
 impl AsciiGenerator {
     pub fn new(chars: String, delimiter: &str) -> Result<Self, anyhow::Error> {
         Ok(AsciiGenerator {
-            rng: StdRng::from_os_rng(),
+            rng: StdRng::try_from_rng(&mut SysRng).unwrap(),
             column_delimiter: delimiter.to_owned(),
             uniform: Uniform::try_from(0..chars.len() as u8)?,
             chars: chars

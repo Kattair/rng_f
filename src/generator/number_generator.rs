@@ -2,6 +2,7 @@ use std::ops::Range;
 
 use rand::distr::Uniform;
 use rand::prelude::*;
+use rand::rngs::SysRng;
 
 use super::Generator;
 use super::constants::{EMPTY_STRING, NEW_LINE};
@@ -16,7 +17,7 @@ pub struct NumberGenerator {
 impl NumberGenerator {
     pub fn new(range: Range<i64>, delimiter: &str) -> Result<Self, anyhow::Error> {
         Ok(NumberGenerator {
-            rng: StdRng::from_os_rng(),
+            rng: StdRng::try_from_rng(&mut SysRng).unwrap(),
             column_delimiter: delimiter.to_owned(),
             uniform: Uniform::try_from(range)?,
             buffer: itoa::Buffer::new(),
