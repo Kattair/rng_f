@@ -17,7 +17,8 @@ pub struct NumberGenerator {
 impl NumberGenerator {
     pub fn new(range: Range<i64>, delimiter: &str) -> Result<Self, anyhow::Error> {
         Ok(NumberGenerator {
-            rng: StdRng::try_from_rng(&mut SysRng).unwrap(),
+            rng: StdRng::try_from_rng(&mut SysRng)
+                .map_err(|e| anyhow::anyhow!("failed to seed RNG: {e}"))?,
             column_delimiter: delimiter.to_owned(),
             uniform: Uniform::try_from(range)?,
             buffer: itoa::Buffer::new(),
