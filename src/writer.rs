@@ -1,8 +1,8 @@
 use std::fs::OpenOptions;
-use std::io::{self, BufWriter, Write};
+use std::io::{BufWriter, Write};
 use std::path::Path;
 
-use anyhow::anyhow;
+use anyhow::Context;
 
 use crate::generator::Generator;
 
@@ -12,13 +12,12 @@ pub fn write_matrix_into_file(
     row_count: u128,
     col_count: u128,
 ) -> Result<(), anyhow::Error> {
-    let path = Path::new(filename);
     let mut file = OpenOptions::new()
         .create(true)
         .write(true)
         .truncate(true)
-        .open(path)
-        .map_err(|e| anyhow!("failed to open output file '{}': {}", filename, e))?;
+        .open(Path::new(filename))
+        .with_context(|| format!("failed to open output file '{filename}'"))?;
 
     write_matrix(generator, &mut file, row_count, col_count)
 }
@@ -29,16 +28,6 @@ pub fn write_matrix(
     row_count: u128,
     col_count: u128,
 ) -> Result<(), anyhow::Error> {
-    do_write_matrix(generator, writable, row_count, col_count)
-        .map_err(|e| anyhow!("failed writing to output: {}", e))
-}
-
-fn do_write_matrix(
-    generator: &mut impl Generator,
-    writable: &mut impl Write,
-    row_count: u128,
-    col_count: u128,
-) -> Result<(), io::Error> {
     let mut writer = BufWriter::new(writable);
 
     for _row in 0..row_count {
