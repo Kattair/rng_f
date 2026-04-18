@@ -1,10 +1,10 @@
 use std::fs::OpenOptions;
-use std::io::{BufWriter, Write};
+use std::io::{self, BufWriter, Write};
 use std::path::Path;
 
 use anyhow::Context;
 
-use crate::generator::Generator;
+use crate::generator::{Generator, SizeHint};
 
 pub fn write_matrix_into_file(
     generator: &mut impl Generator,
@@ -28,7 +28,8 @@ pub fn write_matrix(
     row_count: u128,
     col_count: u128,
 ) -> Result<(), anyhow::Error> {
-    let mut writer = BufWriter::new(writable);
+    let mut writer =
+        BufWriter::with_capacity(pick_buffer_size(generator.size_hint(), col_count), writable);
 
     for _row in 0..row_count {
         writer.write_all(generator.supply_line_start().as_bytes())?;
@@ -44,4 +45,19 @@ pub fn write_matrix(
     }
 
     Ok(())
+}
+
+fn pick_buffer_size(hint: Option<SizeHint>, col_count: u128) -> usize {
+    let default_capacity = BufWriter::new(io::sink()).capacity();
+
+    let Some(hint) = hint else {
+        return default_capacity;
+    };
+
+    let col_size = hint.max_element_bytes + hint.col_delimiter_bytes;
+    let est_row_bytes =
+        (col_count as usize) * col_size + hint.line_start_bytes + hint.line_end_bytes;
+
+    // Floor at BufWriter's own default so tiny rows still batch reasonably.
+    est_row_bytes.max(default_capacity)
 }

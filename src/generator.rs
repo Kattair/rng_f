@@ -7,12 +7,23 @@ use crate::{Config, Generators};
 pub use ascii_generator::AsciiGenerator;
 pub use number_generator::NumberGenerator;
 
+pub struct SizeHint {
+    pub line_start_bytes: usize,
+    pub line_end_bytes: usize,
+    pub max_element_bytes: usize,
+    pub col_delimiter_bytes: usize,
+}
+
 #[enum_delegate::register]
 pub trait Generator {
     fn supply_line_start(&self) -> &str;
     fn supply_line_end(&self) -> &str;
     fn supply_element(&mut self) -> &str;
     fn supply_col_delimiter(&self) -> &str;
+
+    fn size_hint(&self) -> Option<SizeHint> {
+        None
+    }
 }
 
 #[enum_delegate::implement(Generator)]

@@ -5,7 +5,7 @@ use rand::{
 };
 
 use crate::{
-    Generator,
+    Generator, SizeHint,
     generator::constants::{EMPTY_STRING, NEW_LINE},
 };
 
@@ -49,5 +49,16 @@ impl Generator for AsciiGenerator {
 
     fn supply_col_delimiter(&self) -> &str {
         &self.column_delimiter
+    }
+
+    fn size_hint(&self) -> Option<SizeHint> {
+        let max_element_bytes = self.chars.iter().map(String::len).max().unwrap_or(0);
+
+        Some(SizeHint {
+            line_start_bytes: self.supply_line_start().len(),
+            line_end_bytes: self.supply_line_end().len(),
+            max_element_bytes,
+            col_delimiter_bytes: self.column_delimiter.len(),
+        })
     }
 }
